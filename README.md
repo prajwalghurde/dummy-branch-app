@@ -1,60 +1,52 @@
-# Flask Microloans API + Postgres (Docker)
+🧩 Branch Loan API — DevOps Intern Take-Home
 
-Minimal REST API for microloans, built with Flask, SQLAlchemy, Alembic, and PostgreSQL (via Docker Compose).
+A containerized Python Flask API for managing loan records, integrated with PostgreSQL and Alembic migrations.
 
-## Quick start
+🚀 Quick Start (Docker)
+# Clone repository
+git clone https://github.com/<your-username>/branch-loan-api
+cd branch-loan-api
 
-```bash
-# 1) Build and start services
-docker compose up -d --build
+# Start containers
+docker compose up --build
 
-# 2) Run DB migrations
+# Apply DB migrations
 docker compose exec api alembic upgrade head
 
-# 3) Seed dummy data (idempotent)
-docker compose exec api python scripts/seed.py
+✅ Verify Setup
+Endpoint	Method	Example Response
+/health	GET	{ "status": "ok" }
+/api/loans	GET	[]
+/api/loans	POST	Creates a new loan
 
-# 4) Hit endpoints
-curl http://localhost:8000/health
-curl http://localhost:8000/api/loans
-```
+Example:
 
-## Configuration
+curl -X POST http://localhost:5000/api/loans \
+-H "Content-Type: application/json" \
+-d '{
+  "borrower_id": "B123",
+  "amount": 10000,
+  "currency": "USD",
+  "term_months": 12,
+  "interest_rate_apr": 5.5
+}'
 
-See `.env.example` for env vars. By default:
-- `DATABASE_URL=postgresql+psycopg2://postgres:postgres@db:5432/microloans`
-- API listens on `localhost:8000`.
+🧰 Tech Stack
 
-## API
+Python 3.11
 
-- GET `/health` → `{ "status": "ok" }`
-- GET `/api/loans` → list all loans
-- GET `/api/loans/:id` → get loan by id
-- POST `/api/loans` → create loan (status defaults to `pending`)
+Flask
 
-Example create:
-```bash
-curl -X POST http://localhost:8000/api/loans \
-  -H 'Content-Type: application/json' \
-  -d '{
-    "borrower_id": "usr_india_999",
-    "amount": 12000.50,
-    "currency": "INR",
-    "term_months": 6,
-    "interest_rate_apr": 24.0
-  }'
-```
+SQLAlchemy + Alembic
 
-- GET `/api/stats` → aggregate stats: totals, avg, grouped by status/currency.
+PostgreSQL 16
 
-## Development
+Docker & Docker Compose
 
-- App entrypoint: `wsgi.py` (`wsgi:app`)
-- Flask app factory: `app/__init__.py`
-- Models: `app/models.py`
-- Migrations: `alembic/`
+🎯 Final Verification
 
-## Notes
-
-- Amounts are validated server-side (0 < amount ≤ 50000).
-- No authentication for this prototype.
+✅ docker compose up → starts API + DB
+✅ alembic upgrade head → creates loans table
+✅ /health → works
+✅ /api/loans → returns []
+✅ /api/loans (POST) → creates entry

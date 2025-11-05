@@ -1,12 +1,11 @@
 from flask import Flask
-
 from .config import Config
 
 def create_app() -> Flask:
     app = Flask(__name__)
-    app.config.from_object(Config())
+    app.config.from_object(Config)
 
-    # Lazy imports to avoid circular deps during app init
+    # Lazy imports to avoid circular dependencies
     from .routes.health import bp as health_bp
     from .routes.loans import bp as loans_bp
     from .routes.stats import bp as stats_bp

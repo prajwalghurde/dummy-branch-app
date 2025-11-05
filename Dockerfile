@@ -1,20 +1,21 @@
+# Use Python 3.11 as base image
 FROM python:3.11-slim
 
+# Set working directory
 WORKDIR /app
 
-ENV PYTHONDONTWRITEBYTECODE=1
-ENV PYTHONUNBUFFERED=1
-
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential \
-    libpq-dev \
-  && rm -rf /var/lib/apt/lists/*
-
+# Copy dependency file
 COPY requirements.txt .
+
+# Install dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
+# Copy all project files
 COPY . .
 
-EXPOSE 8000
+# Expose the Flask/FastAPI default port
+EXPOSE 5000
+ENV FLASK_APP=wsgi.py
 
-CMD ["gunicorn", "-w", "2", "-b", "0.0.0.0:8000", "wsgi:app"]
+# Command to run the app (using wsgi.py as entrypoint)
+CMD ["python", "wsgi.py"]
